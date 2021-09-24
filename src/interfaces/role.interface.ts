@@ -1,0 +1,1 @@
+export type IRole = 'user' | 'admin';
