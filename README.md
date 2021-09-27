@@ -66,7 +66,7 @@ You can use all [MongoDB](https://docs.mongodb.com/manual/) queries here, just r
     /upload
 Request body should contain "file" field, and an optional "type" field. The file should be in [Form Data](https://developer.mozilla.org/en-US/docs/Web/API/FormData/Using_FormData_Objects#sending_files_using_a_formdata_object) format. If the type is available, it will be placed at the start of file name. Upload works over [AWS S3](https://aws.amazon.com/s3/) system and you sould place access key, secret key, and endpoint in .env file.
 
-### Writing new APIs
+## Writing new APIs
 You can create your desired APIs and add them to this system easily. To do so, you need to follow these steps:
 
 - Create interface
@@ -173,7 +173,7 @@ Adding route
     ...
 Now you can work with new posts API, and all the features above are available for your new API as well.
 
-### Multi language fields
+## Multi language fields
 To specify a multi language field you can simply add it in multilingual fields helper.
 
     // {helpers/multilingualFields.ts}
@@ -191,7 +191,7 @@ Multilingual fields will be saved in database as a string that is JSON stringifi
 Specifying current locale is by sending "locale" variable as a cookie, in query string, or in body of request. The default locale is "en".
 Handling fields are performed out of the box by Multilingual utility, and you don't need to do anything about it. When getting data from the APIs it will give you just specified locale value, also you can create or update multilingual fields like a normal string in every locale and the system will handle it automatically.
 
-### Access control
+## Access control
 Access control in this project is based on RBAC. You can specify some roles and permissions each role has access to. Let's check out permission model.
 
     Permission {
@@ -243,7 +243,7 @@ The fields user sends will be merged by this object, so he/she can't create a po
 	    delete: {author: $uid},
     }
 
-### Custom APIs
+## Custom APIs
 You can write custom APIs and use them alongside the general APIs. To do so:
 - create a service that contains business logic in "services" directory.
 - create a controller that turns request information to service params in "controllers" directory.
