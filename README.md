@@ -26,11 +26,11 @@ If you found it useful don't forget to give a star and share it for your friends
 ### Simple usage
 
     {GET}
-    /users		// Show all users
+    /users			// Show all users
     /users/1		// Show user with id 1
     
     {POST}
-    /users		// Create a user
+    /users			// Create a user
     
     {PUT}
     /users/1		// Update user with id 1
@@ -50,13 +50,13 @@ If you found it useful don't forget to give a star and share it for your friends
 ### Get specific fields
 
     {GET}
-    /users?fields=name%20family%20email		// Show name, family and email of users
+    /users?fields=name%20family%20email	// Show name, family and email of users
     /users/1?fields=-email%20-name		// Show all user fields except name and email
 ### Searching and filtering
 
     {GET}
-    /users?conditions={"name":"Jack"}				// Show all users with name "Jack"
-    /users?conditions={"name":"John","family":"Doe"}		// Show all users with name "John" AND family "Doe"
+    /users?conditions={"name":"Jack"}			// Show all users with name "Jack"
+    /users?conditions={"name":"John","family":"Doe"}	// Show all users with name "John" AND family "Doe"
     /users?conditions={"email":{"$regex":".*gmail.com"}}	// Show all users with Google email
 You can use all [MongoDB](https://docs.mongodb.com/manual/) queries here, just remember to JSON.stringify them.
 
