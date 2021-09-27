@@ -78,12 +78,12 @@ export default class AccessControl {
         }
     }
 
-    public async read<T>(filter: FilterQuery<T>): Promise<IACRead<T>> {
+    public async read<T>(filter: string): Promise<IACRead<T>> {
         try {
             const permission = await this.checkPermission('read');
             if (!permission) return {access: false, filter: {}};
 
-            let processedFilter = filter;
+            let processedFilter = JSON.parse(filter);
             if (permission.read) {
                 const accessObj = this.prepareAccessObject(permission.read);
                 processedFilter = {...processedFilter, ...accessObj};
