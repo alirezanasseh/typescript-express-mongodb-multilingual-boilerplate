@@ -40,9 +40,12 @@ export const getMany = async <T>(req: Request, res: Response, next: NextFunction
         if (req.query.page) {
             options.page = parseInt(req.query.page.toString());
         }
-
+        let filter = '{}';
+        if (req.query.conditions) {
+            filter = req.query.conditions.toString();
+        }
         const response = await US.getMany({
-            filter: JSON.parse((req.query.conditions ?? '{}').toString()),
+            filter,
             projection: (req.query.fields ?? '').toString(),
             options
         });
@@ -64,7 +67,7 @@ export const getOne = async <T>(req: Request, res: Response, next: NextFunction,
             locale: req.locale
         });
         const response = await US.getOne({
-            filter: {_id: req.params.id},
+            filter: '{_id: req.params.id}',
             projection: (req.query.fields ?? '').toString()
         });
         sendResponse({
@@ -102,7 +105,7 @@ export const remove = async <T>(req: Request, res: Response, next: NextFunction,
             currentUser: req.currentUser,
             locale: req.locale
         });
-        const response = await US.remove({id: req.body.id});
+        const response = await US.remove({id: req.params.id});
         sendResponse({
             res,
             response,
