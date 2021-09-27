@@ -37,7 +37,7 @@ export interface IOptions {
 }
 
 export interface IReadProps<T> {
-    filter: FilterQuery<T>;
+    filter: string;
     projection?: string;
     options?: IOptions;
 }
