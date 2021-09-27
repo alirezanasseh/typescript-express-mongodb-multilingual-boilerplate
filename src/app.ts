@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import express from 'express';
 import config from './config';
-import dayjs from 'dayjs';
+
 
 async function startServer() {
   const app = express();
@@ -11,9 +11,7 @@ async function startServer() {
   app
     .listen(config.port, () => {
       console.log(
-        `Server is running on port: ${config.port}, Today is ${dayjs(
-          new Date()
-        ).format('YYYY:MM:DD')}`
+        `Server is running on port: ${config.port}`
       );
     })
     .on('error', () => {
