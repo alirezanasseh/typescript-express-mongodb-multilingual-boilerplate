@@ -26,11 +26,11 @@ If you found it useful don't forget to give a star and share it for your friends
 ### Simple usage
 
     {GET}
-    /users			// Show all users
+    /users		// Show all users
     /users/1		// Show user with id 1
     
     {POST}
-    /users			// Create a user
+    /users		// Create a user
     
     {PUT}
     /users/1		// Update user with id 1
@@ -44,18 +44,18 @@ If you found it useful don't forget to give a star and share it for your friends
 ### Sorting
 
     {GET}
-    /users?sort=family			// Sort users by family ascending
-    /users?sort=-_id			// Sort users by _id descending
+    /users?sort=family		// Sort users by family ascending
+    /users?sort=-_id		// Sort users by _id descending
     /users?sort=-name%20email	// Sort users by name descending and email ascending
 ### Get specific fields
 
     {GET}
     /users?fields=name%20family%20email		// Show name, family and email of users
-    /users/1?fields=-email%20-name			// Show all user fields except name and email
+    /users/1?fields=-email%20-name		// Show all user fields except name and email
 ### Searching and filtering
 
     {GET}
-    /users?conditions={"name":"Jack"}						// Show all users with name "Jack"
+    /users?conditions={"name":"Jack"}				// Show all users with name "Jack"
     /users?conditions={"name":"John","family":"Doe"}		// Show all users with name "John" AND family "Doe"
     /users?conditions={"email":{"$regex":".*gmail.com"}}	// Show all users with Google email
 You can use all [MongoDB](https://docs.mongodb.com/manual/) queries here, just remember to JSON.stringify them.
@@ -195,14 +195,14 @@ Handling fields are performed out of the box by Multilingual utility, and you do
 Access control in this project is based on RBAC. You can specify some roles and permissions each role has access to. Let's check out permission model.
 
     Permission {
-	    role			// Role as a string
-	    entity			// Model name as a string
-	    allowed			// An array of permitted actions: create, read, update, delete
-	    create			// And adding object for create fields
-	    read			// An adding condition for read query
+	    role		// Role as a string
+	    entity		// Model name as a string
+	    allowed		// An array of permitted actions: create, read, update, delete
+	    create		// And adding object for create fields
+	    read		// An adding condition for read query
 	    update_filter	// An adding condition for update query
 	    update_update	// An adding object for update fields
-	    delete			// An adding object for delete query
+	    delete		// An adding object for delete query
 
 The five last  fields may be confusing. So I'm gonna explain how they work.
 Consider a user wants to check his/her new notifications. He/she should have access of read to the notifications model, but should only see his/her notifications. We can implement it like this:
