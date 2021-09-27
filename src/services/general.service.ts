@@ -58,14 +58,14 @@ export default class GeneralService {
                 user: this.currentUser,
                 entity: this.model.modelName
             });
-            const acResult = await AC.read<T>(props.filter)
+            const acResult = await AC.read<T>(props.filter);
             if (!acResult.access) return {error: 'access_denied'};
-            props = {...props, filter: acResult.filter};
 
-            const paginate = Paginate(props);
+            const options = Paginate(props.options);
             let projection = Normalize(this.model.modelName, props.projection);
-            const count = await this.model.countDocuments(paginate.filter);
-            const list = await this.model.find(paginate.filter, projection, paginate.options).lean();
+            const count = await this.model.countDocuments(JSON.parse(props.filter));
+            // console.log(paginate.filter);
+            const list = await this.model.find(JSON.parse(props.filter), projection, options).lean();
 
             // Performing multilingual process
             const ML = new Multilingual({
@@ -89,10 +89,9 @@ export default class GeneralService {
             });
             const acResult = await AC.read<T>(props.filter)
             if (!acResult.access) return {error: 'access_denied'};
-            props = {...props, filter: acResult.filter};
 
             const projection = Normalize(this.model.modelName, props.projection);
-            const item = await this.model.findOne(props.filter, projection).lean();
+            const item = await this.model.findOne(JSON.parse(props.filter), projection).lean();
 
             // Performing multilingual process
             const ML = new Multilingual({
