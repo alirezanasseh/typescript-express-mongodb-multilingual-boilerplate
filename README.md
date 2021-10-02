@@ -188,7 +188,7 @@ Multilingual fields will be saved in database as a string that is JSON stringifi
 	    "en": "Where are you",
 	    "de": "Wo bist du"
     }
-Specifying current locale is by sending "locale" variable as a cookie, in query string, or in body of request. The default locale is "en".
+Specifying current locale is by sending "locale" variable as a cookie or in the query string. The default locale is "en".
 Handling fields are performed out of the box by Multilingual utility, and you don't need to do anything about it. When getting data from the APIs it will give you just specified locale value, also you can create or update multilingual fields like a normal string in every locale and the system will handle it automatically.
 
 ## Access control
