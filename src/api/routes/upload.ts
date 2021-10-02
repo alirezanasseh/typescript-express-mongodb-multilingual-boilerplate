@@ -14,7 +14,7 @@ const s3 = new AWS.S3({
     s3ForcePathStyle: true
 });
 
-const upload = multer({
+const uploadMiddleware = multer({
     storage: multerS3({
         s3: s3,
         bucket: 'files',
@@ -32,13 +32,13 @@ const upload = multer({
     })
 });
 
-export default (app: Router) => {
+const upload = (app: Router) => {
     const route = Router();
     app.use('/upload', route);
 
     route.use(middlewares.authRequired);
 
-    route.post('/', upload.single('file'), async (req: Request, res: Response, next: NextFunction) => {
+    route.post('/', uploadMiddleware.single('file'), async (req: Request, res: Response, next: NextFunction) => {
         try {
             const file = req.file as Express.MulterS3.File;
             sendResponse({res, response: {result: {item: {url: file?.location || ''}}}});
@@ -47,3 +47,5 @@ export default (app: Router) => {
         }
     });
 };
+
+export default upload;

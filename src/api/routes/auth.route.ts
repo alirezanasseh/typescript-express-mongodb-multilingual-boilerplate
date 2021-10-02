@@ -3,7 +3,7 @@ import {celebrate} from 'celebrate';
 import * as Validator from '../../validators';
 import * as Controller from '../../controllers/auth.controller';
 
-export default (app: Router) => {
+const auth = (app: Router) => {
     const route = Router();
     app.use('/auth', route);
 
@@ -12,3 +12,5 @@ export default (app: Router) => {
     route.post('/admin_login', celebrate(Validator.Login), Controller.admin_login);
     route.post('/logout', Controller.logout);
 };
+
+export default auth;

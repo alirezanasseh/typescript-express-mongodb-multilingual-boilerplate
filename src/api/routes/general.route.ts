@@ -3,7 +3,7 @@ import * as Controller from '../../controllers/general.controller';
 import mongoose from 'mongoose';
 import {celebrate} from 'celebrate';
 
-export default <T>(app: Router, rootPath: string, model: mongoose.Model<T>, Schema: object, UpdateSchema: object | null = null) => {
+const general = <T>(app: Router, rootPath: string, model: mongoose.Model<T>, Schema: object, UpdateSchema: object | null = null) => {
     const route = Router();
     app.use(rootPath, route);
 
@@ -13,3 +13,5 @@ export default <T>(app: Router, rootPath: string, model: mongoose.Model<T>, Sche
     route.put('/:id', celebrate(UpdateSchema ?? Schema), (req: Request, res: Response, next: NextFunction) => Controller.update<T>(req, res, next, model));
     route.delete('/:id', (req: Request, res: Response, next: NextFunction) => Controller.remove<T>(req, res, next, model));
 };
+
+export default general;
