@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import {Normalize, Paginate, Multilingual, AccessControl} from '../utils';
+import {Normalize, Multilingual, AccessControl} from '../utils';
 import {
     IDeleteProps,
     IGetMany,
@@ -61,11 +61,9 @@ export default class GeneralService {
             const acResult = await AC.read<T>(props.filter);
             if (!acResult.access) return {error: 'access_denied'};
 
-            const options = Paginate(props.options);
             let projection = Normalize(this.model.modelName, props.projection);
             const count = await this.model.countDocuments(JSON.parse(props.filter));
-            // console.log(paginate.filter);
-            const list = await this.model.find(JSON.parse(props.filter), projection, options).lean();
+            const list = await this.model.find(JSON.parse(props.filter), projection, props.options).lean();
 
             // Performing multilingual process
             const ML = new Multilingual({
@@ -113,22 +111,25 @@ export default class GeneralService {
                 user: this.currentUser,
                 entity: this.model.modelName
             });
-            const acResult = await AC.update<T>({_id: props.id} as FilterQuery<T>)
+            const acResult = await AC.update<T>({_id: props.id} as FilterQuery<T>);
             if (!acResult.access) return {error: 'access_denied'};
 
             const item = await this.model.findOne(acResult.filter);
 
-            // Perform multilingual process
-            const ML = new Multilingual({
-                locale: this.locale,
-                entity: this.model.modelName
-            });
-            const processedUpdate = ML.update(item, props.update);
+            if (item) {
+                // Perform multilingual process
+                const ML = new Multilingual({
+                    locale: this.locale,
+                    entity: this.model.modelName
+                });
+                const processedUpdate = ML.update(item, props.update);
 
-            const result = await item.updateOne(processedUpdate);
+                const result = await item.updateOne(processedUpdate);
 
-            // const result = await this.model.updateOne(processed.props.filter, processed.props.update);
-            return {result};
+                return {result};
+            } else {
+                return {error: 'not_found'};
+            }
         } catch (e) {
             throw e;
         }
