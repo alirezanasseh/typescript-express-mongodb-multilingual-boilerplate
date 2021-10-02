@@ -1,4 +1,4 @@
-import {MultilingualFields} from '../helpers';
+import {MultilingualFields, SnakeToPascal} from '../helpers';
 
 interface IMultilingual {
     entity: string;
@@ -15,7 +15,7 @@ export default class Multilingual {
         this.MLFields = MultilingualFields(props.entity);
     }
 
-    private processRecord(item: any): any {
+    private processRecord(item: any, MLFields: Array<string>): any {
         try {
             let keys = Object.keys(item);
             let key = '';
@@ -25,11 +25,16 @@ export default class Multilingual {
                 key = keys[i];
 
                 // Checking if this field is multilingual
-                if (this.MLFields.indexOf(key.toString()) > -1) {
+                if (MLFields.indexOf(key.toString()) > -1) {
 
                     // Fetching current locale value
                     itemJSON = JSON.parse(item[key]);
                     item[key] = itemJSON[this.locale] ?? itemJSON[this.defaultLocale] ?? '';
+                }
+
+                // Checking if this field contains sub document
+                if (key !== '_id' && typeof item[key] === 'object') {
+                    item[key] = this.processRecord(item[key], MultilingualFields(SnakeToPascal(key)));
                 }
             }
             return item;
@@ -74,7 +79,7 @@ export default class Multilingual {
 
             // Iterating through list
             for (let i = 0; i < list.length; i++) {
-                list[i] = this.processRecord(list[i]);
+                list[i] = this.processRecord(list[i], this.MLFields);
             }
 
             return list;
@@ -90,7 +95,7 @@ export default class Multilingual {
                 return item;
             }
 
-            return this.processRecord(item);
+            return this.processRecord(item, this.MLFields);
         } catch (e) {
             throw e;
         }
@@ -100,7 +105,7 @@ export default class Multilingual {
         try {
             // Checking that if MLFields is empty no need for operations
             if (this.MLFields.length === 0) {
-                return item;
+                return update;
             }
 
             // Checking if there are results to update
