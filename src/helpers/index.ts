@@ -1,5 +1,8 @@
 import MultilingualFields from './multilingualFields';
+import {SnakeToPascal, UpperFirst} from "./string";
 
 export {
-    MultilingualFields
+    MultilingualFields,
+    SnakeToPascal,
+    UpperFirst
 };
