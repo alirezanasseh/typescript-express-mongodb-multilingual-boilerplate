@@ -217,7 +217,7 @@ The access control line here is "owner: currentUserId", and the is comes from co
 	    role: 'user',
 	    entity: 'Notification',
 	    allowed: ['read', 'delete'],
-	    read: {owner: $uid}
+	    read: {owner: '$uid'}
     }
 Now user can request to /notifications API and you can be sure he/she will get his/her own notifications, no need to handle permission manually, or write custom APIs for that. The system automatically adds conditions from permission model to every find or findOne queries.
 
@@ -227,7 +227,7 @@ Let's see how "create" works. The user creates a new post, so he/she sends post 
 	    role: 'user',
 	    entity: 'Post',
 	    allowed: ['create', 'read', 'update', 'delete'],
-	    create: {author: $uid}
+	    create: {author: '$uid'}
     }
 
 The fields user sends will be merged by this object, so he/she can't create a post by another user id, cause it will be replaced by his/her own id. Here is a complete record of user<->post permission:
@@ -236,11 +236,11 @@ The fields user sends will be merged by this object, so he/she can't create a po
 	    role: 'user',
 	    entity: 'Post',
 	    allowed: ['create', 'read', 'update', 'delete'],
-	    create: {author: $uid},
+	    create: {author: '$uid'},
 	    read: {},
-	    update_filter: {author: $uid},
-	    update_update: {author: $uid},
-	    delete: {author: $uid},
+	    update_filter: {author: '$uid'},
+	    update_update: {author: '$uid'},
+	    delete: {author: '$uid'},
     }
 
 ## Custom APIs
