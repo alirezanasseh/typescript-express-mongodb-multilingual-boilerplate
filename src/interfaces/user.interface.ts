@@ -1,4 +1,4 @@
-import {IRole} from './role.interface';
+import {IUserRole} from './role.interface';
 
 export interface IUser {
     _id: string;
@@ -7,7 +7,7 @@ export interface IUser {
     email: string;
     password: string;
     salt: string;
-    role: IRole;
+    role: IUserRole;
     bio: string;    // This field is multilingual
 }
 
