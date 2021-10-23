@@ -1,7 +1,8 @@
 import {FilterQuery} from 'mongoose';
+import {IRole} from ".";
 
 export interface IPermission {
-    role: string,
+    role: IRole,
     entity: string;
     allowed: Array<'create' | 'read' | 'update' | 'delete'>;
     create: any;
