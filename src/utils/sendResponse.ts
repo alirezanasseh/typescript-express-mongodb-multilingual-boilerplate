@@ -27,11 +27,14 @@ const sendResponse = (props: ISendResponseProps) => {
                 maxAge: 7 * 24 * 3600 * 1000,
                 httpOnly: true,
                 sameSite: 'none',
-                secure: true
-            }).status(status).json(response.result);
+                secure: config.nodeEnv === 'production'     // In production cookies must be secure and in development not secure
+            });
+            res.status(status);
+            res.json(response.result);
         } else {
             // Send success response
-            res.status(status).json(response.result);
+            res.status(status);
+            res.json(response.result);
         }
     } else if (response?.error) {
         // Checking this language exists, if not set language to en
@@ -43,10 +46,12 @@ const sendResponse = (props: ISendResponseProps) => {
         let error = config.locale_dict[locale][response.error] ?? response.error;
 
         // Send error response
-        res.status(status).json({errors: {message: error}});
+        res.status(status);
+        res.json({errors: {message: error}});
     } else {
         // Send unknown error response
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(response);
+        res.status(httpStatus.INTERNAL_SERVER_ERROR);
+        res.json('System error');
     }
 };
 
