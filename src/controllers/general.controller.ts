@@ -30,7 +30,7 @@ export const getMany = async <T>(req: Request, res: Response, next: NextFunction
         });
 
         const options = Options(req);
-        let filter = '{}';
+        let filter = JSON.stringify({});
         if (req.query.conditions) {
             filter = req.query.conditions.toString();
         }
