@@ -62,8 +62,8 @@ export default class GeneralService {
             if (!acResult.access) return {error: 'access_denied'};
 
             let projection = Normalize(this.model.modelName, props.projection);
-            const count = await this.model.countDocuments(JSON.parse(props.filter));
-            const list = await this.model.find(JSON.parse(props.filter), projection, props.options).lean();
+            const count = await this.model.countDocuments(acResult.filter);
+            const list = await this.model.find(acResult.filter, projection, props.options).lean();
 
             // Performing multilingual process
             const ML = new Multilingual({
@@ -89,7 +89,7 @@ export default class GeneralService {
             if (!acResult.access) return {error: 'access_denied'};
 
             const projection = Normalize(this.model.modelName, props.projection);
-            const item = await this.model.findOne(JSON.parse(props.filter), projection).lean();
+            const item = await this.model.findOne(acResult.filter, projection).lean();
 
             // Performing multilingual process
             const ML = new Multilingual({
@@ -111,7 +111,7 @@ export default class GeneralService {
                 user: this.currentUser,
                 entity: this.model.modelName
             });
-            const acResult = await AC.update<T>({_id: props.id} as FilterQuery<T>);
+            const acResult = await AC.update<T>({_id: props.id} as FilterQuery<T>, props.update);
             if (!acResult.access) return {error: 'access_denied'};
 
             const item = await this.model.findOne(acResult.filter);
@@ -122,7 +122,7 @@ export default class GeneralService {
                     locale: this.locale,
                     entity: this.model.modelName
                 });
-                const processedUpdate = ML.update(item, props.update);
+                const processedUpdate = ML.update(item, acResult.update);
 
                 const result = await item.updateOne(processedUpdate);
 
