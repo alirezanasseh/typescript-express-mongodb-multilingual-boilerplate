@@ -1,4 +1,5 @@
-import {MultilingualFields, SnakeToPascal} from '../helpers';
+import Helper from '../helpers';
+import {MultilingualFields} from '../utils';
 
 interface IMultilingual {
     entity: string;
@@ -34,7 +35,7 @@ export default class Multilingual {
 
                 // Checking if this field contains sub document
                 if (key !== '_id' && typeof item[key] === 'object') {
-                    item[key] = this.processRecord(item[key], MultilingualFields(SnakeToPascal(key)));
+                    item[key] = this.processRecord(item[key], MultilingualFields(Helper.string.snakeToPascal(key)));
                 }
             }
             return item;
