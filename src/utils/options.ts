@@ -8,7 +8,7 @@ export default function Options(req: Request): QueryOptions {
     }
     if (req.query.pageSize) {
         const inputLimit = parseInt(req.query.pageSize.toString());
-        if (inputLimit > 0) {
+        if (inputLimit > 0 && inputLimit <= 500) {
             limit = inputLimit
         }
     }
