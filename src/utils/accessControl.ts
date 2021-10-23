@@ -1,4 +1,4 @@
-import {IUser} from '../interfaces';
+import {IRole, IUser} from '../interfaces';
 import {Permission} from '../models';
 import {FilterQuery} from 'mongoose';
 
@@ -19,9 +19,15 @@ interface IACRead<T> {
     filter: FilterQuery<T>;
 }
 
+interface IACUpdate<T> {
+    access: boolean;
+    filter: FilterQuery<T>;
+    update: Partial<T>;
+}
+
 export default class AccessControl {
     private user: IUser | undefined;
-    private readonly role: string;
+    private readonly role: IRole;
     private entity: string;
 
     constructor(props: IACProps) {
@@ -38,6 +44,7 @@ export default class AccessControl {
                     create: {},
                     read: {},
                     update_filter: {},
+                    update_update: {},
                     delete: {}
                 };
             }
@@ -56,7 +63,7 @@ export default class AccessControl {
         // Iterating through permission create to replace $uid by user.id
         for (const [key, value] of Object.entries(accessObj)) {
             if (value === '$uid') {
-                accessObj[key] = this.user?._id || '';
+                accessObj[key] = this.user?._id?.toString() || '';
             }
         }
         return accessObj;
@@ -94,17 +101,26 @@ export default class AccessControl {
         }
     }
 
-    public async update<T>(filter: FilterQuery<T>): Promise<IACRead<T>> {
+    public async update<T>(filter: FilterQuery<T>, updateFields: Partial<T>): Promise<IACUpdate<T>> {
         try {
             const permission = await this.checkPermission('update');
-            if (!permission) return {access: false, filter: {}};
+            if (!permission) return {access: false, filter: {}, update: {}};
 
             let processedFilter = filter;
             if (permission.update_filter) {
                 const accessObj = this.prepareAccessObject(permission.update_filter);
                 processedFilter = {...processedFilter, ...accessObj};
             }
-            return {access: true, filter: processedFilter};
+            let processedUpdate = updateFields;
+            if (permission.update_update) {
+                const accessObj = this.prepareAccessObject(permission.update_update);
+                processedUpdate = {...processedUpdate, ...accessObj};
+            }
+            return {
+                access: true,
+                filter: processedFilter,
+                update: processedUpdate
+            };
         } catch (e) {
             throw e;
         }
