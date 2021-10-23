@@ -1,7 +1,10 @@
 import {IUser, IUserDTO} from './user.interface';
-import {IRole} from './role.interface';
 import {IPermission} from './permission.interface';
 import {ILocaleDict} from './localeDict.interface';
+import {
+    IRole,
+    IUserRole
+} from './role.interface';
 import {
     IGetOne,
     IGetMany,
@@ -20,6 +23,7 @@ export {
     IUser,
     IUserDTO,
     IRole,
+    IUserRole,
     IGetOne,
     IGetMany,
     IResult,
