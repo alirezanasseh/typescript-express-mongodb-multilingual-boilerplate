@@ -1,8 +1,11 @@
-import MultilingualFields from './multilingualFields';
-import {SnakeToPascal, UpperFirst} from "./string";
+import {stringHelpers} from './string';
+import {dateHelpers} from './date';
+import {arrayHelpers} from './array';
 
-export {
-    MultilingualFields,
-    SnakeToPascal,
-    UpperFirst
+const Helper = {
+    date: dateHelpers,
+    string: stringHelpers,
+    array: arrayHelpers
 };
+
+export default Helper;
