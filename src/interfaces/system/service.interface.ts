@@ -1,6 +1,8 @@
-import {IUser} from './user.interface';
-import {FilterQuery} from 'mongoose';
+import {IUser} from '../project/user.interface';
 import * as mongoose from 'mongoose';
+import translate from '../../locales/en.json';
+
+export type IServerMessages = keyof typeof translate;
 
 export interface IGetMany<T> {
     count: number;
@@ -22,11 +24,16 @@ export interface ICreate {
 
 export interface IService<T> {
     result?: T;
-    error?: string;
+    error?: IServerMessages;
 }
 
-export interface IAuth {
-    user: IUser;
+export interface IAuthRegister {
+    id: string;
+    token: string;
+}
+
+export interface IAuthLogin {
+    item: Partial<IUser>;
     token: string;
 }
 
@@ -39,6 +46,7 @@ export interface IOptions {
 export interface IReadProps<T> {
     filter: string;
     projection?: string;
+    populate?: Array<{path: string; select: string}>;
     options?: IOptions;
 }
 
