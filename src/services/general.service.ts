@@ -7,9 +7,9 @@ import {
     IReadProps,
     IService,
     IServiceProps,
-    IUpdateProps,
-    IUser
-} from '../interfaces';
+    IUpdateProps
+} from '../interfaces/system';
+import {IUser} from "../interfaces/project";
 import {FilterQuery} from 'mongoose';
 
 export default class GeneralService {
@@ -63,12 +63,18 @@ export default class GeneralService {
 
             let projection = Normalize(this.model.modelName, props.projection);
             const count = await this.model.countDocuments(acResult.filter);
-            const list = await this.model.find(acResult.filter, projection, props.options).lean();
+            let list;
+            if (props.populate) {
+                list = await this.model.find(acResult.filter, projection, props.options).lean().populate(props.populate);
+            } else {
+                list = await this.model.find(acResult.filter, projection, props.options).lean();
+            }
 
             // Performing multilingual process
             const ML = new Multilingual({
                 locale: this.locale,
-                entity: this.model.modelName
+                entity: this.model.modelName,
+                populated: !!props.populate
             });
             const processedList = ML.getMany(list);
 
@@ -89,7 +95,12 @@ export default class GeneralService {
             if (!acResult.access) return {error: 'access_denied'};
 
             const projection = Normalize(this.model.modelName, props.projection);
-            const item = await this.model.findOne(acResult.filter, projection).lean();
+            let item;
+            if (props.populate) {
+                item = await this.model.findOne(acResult.filter, projection).lean().populate(props.populate);
+            } else {
+                item = await this.model.findOne(acResult.filter, projection).lean();
+            }
 
             // Performing multilingual process
             const ML = new Multilingual({
