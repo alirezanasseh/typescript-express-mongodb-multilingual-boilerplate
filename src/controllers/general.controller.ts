@@ -34,10 +34,15 @@ export const getMany = async <T>(req: Request, res: Response, next: NextFunction
         if (req.query.conditions) {
             filter = req.query.conditions.toString();
         }
+        let populate = null;
+        if (req.query.populate) {
+            populate = JSON.parse(req.query.populate.toString());
+        }
 
         const response = await US.getMany({
             filter,
             projection: (req.query.fields ?? '').toString(),
+            populate,
             options
         });
         sendResponse({
@@ -57,9 +62,14 @@ export const getOne = async <T>(req: Request, res: Response, next: NextFunction,
             currentUser: req.currentUser,
             locale: req.locale
         });
+        let populate = null;
+        if (req.query.populate) {
+            populate = JSON.parse(req.query.populate.toString());
+        }
         const response = await US.getOne({
             filter: JSON.stringify({_id: req.params.id}),
-            projection: (req.query.fields ?? '').toString()
+            projection: (req.query.fields ?? '').toString(),
+            populate
         });
         sendResponse({
             res,
