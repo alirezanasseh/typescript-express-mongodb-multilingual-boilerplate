@@ -15,3 +15,10 @@ export const Login = {
         password: Joi.string().required().min(8)
     })
 };
+
+export const ChangePassword = {
+    body: Joi.object({
+        current: Joi.string().required(),
+        new: Joi.string().required()
+    })
+};
