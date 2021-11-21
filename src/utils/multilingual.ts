@@ -4,20 +4,24 @@ import {MultilingualFields} from '../utils';
 interface IMultilingual {
     entity: string;
     locale: string
+    populated?: boolean;
 }
 
 export default class Multilingual {
     private readonly locale: string;
     private readonly MLFields: Array<string>;
+    private readonly populated: boolean;
     private defaultLocale = 'en';
 
     constructor(props: IMultilingual) {
         this.locale = props.locale;
         this.MLFields = MultilingualFields(props.entity);
+        this.populated = props.populated || false;
     }
 
     private processRecord(item: any, MLFields: Array<string>): any {
         try {
+            if (!item) return item;
             let keys = Object.keys(item);
             let key = '';
             let itemJSON;
@@ -29,13 +33,25 @@ export default class Multilingual {
                 if (MLFields.indexOf(key.toString()) > -1) {
 
                     // Fetching current locale value
-                    itemJSON = JSON.parse(item[key]);
-                    item[key] = itemJSON[this.locale] ?? itemJSON[this.defaultLocale] ?? '';
+                    try {
+                        itemJSON = JSON.parse(item[key]);
+                        item[key] = itemJSON[this.locale] ?? itemJSON[this.defaultLocale] ?? '';
+                    } catch (e) {
+                        continue;
+                    }
                 }
 
                 // Checking if this field contains sub document
                 if (key !== '_id' && typeof item[key] === 'object') {
-                    item[key] = this.processRecord(item[key], MultilingualFields(Helper.string.snakeToPascal(key)));
+                    // Here we consider foreign keys are in the name of the foreign model but in snake case
+                    // So we convert its name to pascal case to get the model name
+                    if (Array.isArray(item[key])) {
+                        for (let i = 0; i < item[key].length; i++) {
+                            item[key][i] = this.processRecord(item[key][i], MultilingualFields(Helper.string.snakeToPascal(key)));
+                        }
+                    } else {
+                        item[key] = this.processRecord(item[key], MultilingualFields(Helper.string.snakeToPascal(key)));
+                    }
                 }
             }
             return item;
@@ -73,8 +89,8 @@ export default class Multilingual {
 
     public getMany(list: Array<any>): Array<any> {
         try {
-            // Checking that if MLFields is empty no need for operations
-            if (this.MLFields.length === 0) {
+            // Checking that if MLFields is empty and list is not populated no need for operations
+            if (this.MLFields.length === 0 && !this.populated) {
                 return list;
             }
 
@@ -92,7 +108,7 @@ export default class Multilingual {
     public getOne(item: any): any {
         try {
             // Checking that if MLFields is empty no need for operations
-            if (this.MLFields.length === 0) {
+            if (this.MLFields.length === 0 && !this.populated) {
                 return item;
             }
 
