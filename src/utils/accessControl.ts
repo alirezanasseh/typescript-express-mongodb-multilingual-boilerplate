@@ -1,4 +1,4 @@
-import {IRole, IUser} from '../interfaces';
+import {IRole, IUser} from '../interfaces/project';
 import {Permission} from '../models';
 import {FilterQuery} from 'mongoose';
 

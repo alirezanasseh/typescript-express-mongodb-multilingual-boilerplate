@@ -1,5 +1,5 @@
 import mongoose, {Schema} from 'mongoose';
-import {IPermission} from '../interfaces';
+import {IPermission} from '../interfaces/project';
 
 const permissionSchema = new Schema({
     role: {

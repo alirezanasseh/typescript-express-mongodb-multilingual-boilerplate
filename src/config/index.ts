@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import fs from 'fs';
-import {ILocaleDict} from '../interfaces';
+import {ILocaleDict} from '../interfaces/system';
 import * as locales from '../locales';
 
 process.env.NODE_ENV ??= 'development';

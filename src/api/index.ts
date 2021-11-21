@@ -1,7 +1,7 @@
 import {Router} from 'express';
 import {errors} from 'celebrate';
 import * as Route from './routes';
-import * as Interface from '../interfaces';
+import * as Interface from '../interfaces/project';
 import * as Model from '../models';
 import * as Validator from '../validators';
 import middleware from './middlewares';

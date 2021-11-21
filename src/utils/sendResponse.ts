@@ -1,6 +1,6 @@
 import httpStatus from 'http-status';
 import {Response} from 'express';
-import {IService} from '../interfaces';
+import {IService} from '../interfaces/system';
 import config from '../config';
 
 interface ISendResponseProps {
