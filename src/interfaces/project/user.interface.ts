@@ -2,8 +2,7 @@ import {IUserRole} from './role.interface';
 
 export interface IUser {
     _id: string;
-    name?: string;
-    family: string;
+    name: string;
     email: string;
     password: string;
     salt: string;
