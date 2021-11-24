@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import {Normalize, Multilingual, AccessControl} from '../utils';
+import {Normalize, Multilingual, AccessControl, MultilingualPopulate} from '../utils';
 import {
     IDeleteProps,
     IGetMany,
@@ -74,7 +74,10 @@ export default class GeneralService {
             const ML = new Multilingual({
                 locale: this.locale,
                 entity: this.model.modelName,
-                populated: !!props.populate
+                populated: MultilingualPopulate({
+                    model: this.model,
+                    populate: props.populate
+                })
             });
             const processedList = ML.getMany(list);
 
@@ -105,7 +108,11 @@ export default class GeneralService {
             // Performing multilingual process
             const ML = new Multilingual({
                 locale: this.locale,
-                entity: this.model.modelName
+                entity: this.model.modelName,
+                populated: MultilingualPopulate({
+                    model: this.model,
+                    populate: props.populate
+                })
             });
             const processedItem = ML.getOne(item);
 

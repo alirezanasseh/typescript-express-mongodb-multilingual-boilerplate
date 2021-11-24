@@ -1,4 +1,4 @@
-import {IUser} from '../project/user.interface';
+import {IUser} from '../project';
 import * as mongoose from 'mongoose';
 import translate from '../../locales/en.json';
 
@@ -43,10 +43,12 @@ export interface IOptions {
     page?: number;
 }
 
+export type IPopulate = Array<{path: string; select: string}>;
+
 export interface IReadProps<T> {
     filter: string;
     projection?: string;
-    populate?: Array<{path: string; select: string}>;
+    populate?: IPopulate;
     options?: IOptions;
 }
 

@@ -1,22 +1,23 @@
-import Helper from '../helpers';
 import {MultilingualFields} from '../utils';
 
 interface IMultilingual {
     entity: string;
     locale: string
-    populated?: boolean;
+    populated?: {};
 }
 
 export default class Multilingual {
     private readonly locale: string;
     private readonly MLFields: Array<string>;
-    private readonly populated: boolean;
+    private readonly populated: {
+        [x: string]: string;
+    };
     private defaultLocale = 'en';
 
     constructor(props: IMultilingual) {
         this.locale = props.locale;
         this.MLFields = MultilingualFields(props.entity);
-        this.populated = props.populated || false;
+        this.populated = props.populated || {};
     }
 
     private processRecord(item: any, MLFields: Array<string>): any {
@@ -43,14 +44,12 @@ export default class Multilingual {
 
                 // Checking if this field contains sub document
                 if (key !== '_id' && typeof item[key] === 'object') {
-                    // Here we consider foreign keys are in the name of the foreign model but in snake case
-                    // So we convert its name to pascal case to get the model name
                     if (Array.isArray(item[key])) {
                         for (let i = 0; i < item[key].length; i++) {
-                            item[key][i] = this.processRecord(item[key][i], MultilingualFields(Helper.string.snakeToPascal(key)));
+                            item[key][i] = this.processRecord(item[key][i], MultilingualFields(this.populated[key]));
                         }
                     } else {
-                        item[key] = this.processRecord(item[key], MultilingualFields(Helper.string.snakeToPascal(key)));
+                        item[key] = this.processRecord(item[key], MultilingualFields(this.populated[key]));
                     }
                 }
             }

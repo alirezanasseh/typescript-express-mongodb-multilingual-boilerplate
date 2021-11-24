@@ -11,7 +11,8 @@ import {
     IDeleteProps,
     IAuthRegister,
     IAuthLogin,
-    IServiceProps
+    IServiceProps,
+    IPopulate
 } from './service.interface';
 
 export {
@@ -27,5 +28,6 @@ export {
     IServiceProps,
     IAuthRegister,
     IAuthLogin,
-    ILocaleDict
+    ILocaleDict,
+    IPopulate
 }
