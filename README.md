@@ -64,7 +64,7 @@ You can use all [MongoDB](https://docs.mongodb.com/manual/) queries here, just r
 
     {POST}
     /upload
-Request body should contain "file" field, and an optional "type" field. The file should be in [Form Data](https://developer.mozilla.org/en-US/docs/Web/API/FormData/Using_FormData_Objects#sending_files_using_a_formdata_object) format. If the type is available, it will be placed at the start of file name. Upload works over [AWS S3](https://aws.amazon.com/s3/) system and you sould place access key, secret key, and endpoint in .env file.
+Request body should contain "file" field, and an optional "type" field. The file should be in [Form Data](https://developer.mozilla.org/en-US/docs/Web/API/FormData/Using_FormData_Objects#sending_files_using_a_formdata_object) format. If the type is available, it will be placed at the start of file name. Upload works over [AWS S3](https://aws.amazon.com/s3/) system, and you should place access key, secret key, and endpoint in .env file.
 
 ## Writing new APIs
 You can create your desired APIs and add them to this system easily. To do so, you need to follow these steps:
@@ -78,7 +78,7 @@ For example let's create a simple blog post API.
 
 Creating interface
 
-    // {interfaces/post.interface.ts}
+    // {interfaces/project/post.interface.ts}
     import {IUser} from '.';
     
     export interface IPost {
@@ -143,12 +143,12 @@ Creating validator
 	    author: Joi.string().required()
     }
     
-    export const UserCreate = {  
+    export const PostCreate = {  
 	    body: Joi.object({...UserFields})  
     };
     
     // Update fields can be empty  
-    export const UserUpdate = {  
+    export const PostUpdate = {  
 	    body: Joi.object(UserFields).fork(Object.keys(UserFields), (schema => schema.optional()))  
     };
 Adding validator to the index of validators
@@ -174,7 +174,7 @@ Adding route
 Now you can work with new posts API, and all the features above are available for your new API as well.
 
 ## Multi language fields
-To specify a multi language field you can simply add it in multilingual fields helper.
+To specify a multi language field you can simply add it in "multilingual fields" helper.
 
     // {helpers/multilingualFields.ts}
     ...
@@ -182,14 +182,14 @@ To specify a multi language field you can simply add it in multilingual fields h
 	    fields = ['title'];
 	    break;
     ...
-Multilingual fields will be saved in database as a string that is JSON stringified of an object like this:
+Multilingual fields will be saved in database as a string that is JSON stringify form of an object like this:
 
     {
 	    "en": "Where are you",
 	    "de": "Wo bist du"
     }
 Specifying current locale is by sending "locale" variable as a cookie or in the query string. The default locale is "en".
-Handling fields are performed out of the box by Multilingual utility, and you don't need to do anything about it. When getting data from the APIs it will give you just specified locale value, also you can create or update multilingual fields like a normal string in every locale and the system will handle it automatically.
+Handling fields are performed out of the box by Multilingual utility, and you don't need to do anything about it. When getting data from the APIs it will give you just specified locale value, also you can create or update multilingual fields like a normal string in every locale, and the system will handle it automatically.
 
 ## Access control
 Access control in this project is based on RBAC. You can specify some roles and permissions each role has access to. Let's check out permission model.
@@ -198,20 +198,20 @@ Access control in this project is based on RBAC. You can specify some roles and 
 	    role		// Role as a string
 	    entity		// Model name as a string
 	    allowed		// An array of permitted actions: create, read, update, delete
-	    create		// And adding object for create fields
+	    create		// An adding object for create fields
 	    read		// An adding condition for read query
 	    update_filter	// An adding condition for update query
 	    update_update	// An adding object for update fields
-	    delete		// An adding object for delete query
+	    delete		// An adding condition for delete query
 
-The five last  fields may be confusing. So I'm gonna explain how they work.
+The five last  fields may seem confusing. So I'm going to explain how they work.
 Consider a user wants to check his/her new notifications. He/she should have access of read to the notifications model, but should only see his/her notifications. We can implement it like this:
 
     const notifications = await Notification.find({
 	    visited: false,
 	    owner: currentUserId
     });
-The access control line here is "owner: currentUserId", and the is comes from cookies. We're gonna place this condition in permission model. So the permission record will be like this:
+The access control line here is "owner: currentUserId", and the id comes from cookies. We're going to place this condition in permission model. So the permission record will be like this:
 
     {
 	    role: 'user',
@@ -221,7 +221,7 @@ The access control line here is "owner: currentUserId", and the is comes from co
     }
 Now user can request to /notifications API and you can be sure he/she will get his/her own notifications, no need to handle permission manually, or write custom APIs for that. The system automatically adds conditions from permission model to every find or findOne queries.
 
-Let's see how "create" works. The user creates a new post, so he/she sends post fields and you should save it by his/her id as author. Again you put "{author: $uid}" in create field of permission:
+Let's see how "create" works. The user creates a new post, so he/she sends post fields, and you should save it by his/her id as author. Again you put "{author: $uid}" in create field of permission:
 
     {
 	    role: 'user',
@@ -230,7 +230,7 @@ Let's see how "create" works. The user creates a new post, so he/she sends post 
 	    create: {author: '$uid'}
     }
 
-The fields user sends will be merged by this object, so he/she can't create a post by another user id, cause it will be replaced by his/her own id. Here is a complete record of user<->post permission:
+The fields that user sends will be merged by this object, so he/she can't create a post by another user id, because it will be replaced by his/her own id. Here is a complete record of user<->post permission:
 
     {
 	    role: 'user',
